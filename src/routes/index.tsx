@@ -7,8 +7,8 @@ import { useEffect, useRef, useState, useCallback } from 'react'
 
 const DEVELOPER = {
   handle: 'RedstoneOps',
-  realName: 'Alex "Voxel" Harding',
-  title: 'Minecraft Plugin Developer & Server Architect',
+  realName: 'Buca's Domain',
+  title: 'Minecraft Developer & VPS and Hosting Provider',
   bio: `I've been engineering Minecraft servers since 2013 — from humble survival
   worlds to large-scale networks with custom game modes, economy systems, and
   anti-cheat solutions. Fluent in Java, Kotlin, and the dark arts of NMS internals.
