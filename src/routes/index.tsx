@@ -1,0 +1,741 @@
+import { createFileRoute } from '@tanstack/react-router'
+import { useEffect, useRef, useState, useCallback } from 'react'
+
+// ============================================================
+//  PORTFOLIO CONFIG — Edit everything here!
+// ============================================================
+
+const DEVELOPER = {
+  handle: 'RedstoneOps',
+  realName: 'Alex "Voxel" Harding',
+  title: 'Minecraft Plugin Developer & Server Architect',
+  bio: `I've been engineering Minecraft servers since 2013 — from humble survival
+  worlds to large-scale networks with custom game modes, economy systems, and
+  anti-cheat solutions. Fluent in Java, Kotlin, and the dark arts of NMS internals.
+  When I'm not optimizing TPS I'm probably abusing redstone in ways the devs
+  never intended.`,
+  location: 'Sector 7-G, The Grid',
+  available: true,
+}
+
+const PAST_SERVERS = [
+  {
+    name: 'NovaCraft Network',
+    role: 'Lead Plugin Developer',
+    period: '2021 – 2024',
+    playerPeak: '3,200 concurrent',
+    description:
+      'Built a fully custom factions system with territory wars, clan vaults, and real-time map rendering. Designed the entire economy layer including auction houses, player shops, and inflation controls.',
+    tags: ['Factions', 'Economy', 'Java', 'MySQL', 'Redis'],
+    status: 'retired',
+  },
+  {
+    name: 'VoidPlex SkyBlock',
+    role: 'Senior Developer',
+    period: '2019 – 2021',
+    playerPeak: '1,800 concurrent',
+    description:
+      'Engineered custom island generation algorithms and a prestige system with 40+ challenges. Integrated Stripe for rank purchases and built an admin dashboard for live server metrics.',
+    tags: ['SkyBlock', 'Kotlin', 'PostgreSQL', 'Stripe API'],
+    status: 'active',
+  },
+  {
+    name: 'CrimsonPvP',
+    role: 'Plugin Developer',
+    period: '2017 – 2019',
+    playerPeak: '900 concurrent',
+    description:
+      'Developed anti-cheat modules with heuristic movement analysis and custom kit-PvP mechanics. Reduced false positives by 60% compared to off-the-shelf solutions.',
+    tags: ['PvP', 'Anti-Cheat', 'NMS', 'Java'],
+    status: 'retired',
+  },
+  {
+    name: 'AetherMC RPG',
+    role: 'Systems Architect',
+    period: '2015 – 2017',
+    playerPeak: '500 concurrent',
+    description:
+      'Architected a full RPG framework: custom mob AI, loot tables, skill trees, quest chains, and a guild system. The codebase became an open-source template used by dozens of servers.',
+    tags: ['RPG', 'AI', 'Open Source', 'Java'],
+    status: 'retired',
+  },
+]
+
+const SERVICES = [
+  {
+    icon: '⬡',
+    name: 'Custom Plugin Development',
+    description:
+      'Bespoke Bukkit/Spigot/Paper plugins built to your exact specifications. From simple utilities to complex game systems — clean, documented, performant code.',
+    price: 'From $150',
+  },
+  {
+    icon: '◈',
+    name: 'Server Architecture & Setup',
+    description:
+      'Full server infrastructure design: BungeeCord/Velocity networks, load balancing, database schemas, caching strategies, and deployment pipelines.',
+    price: 'From $300',
+  },
+  {
+    icon: '◉',
+    name: 'Performance Optimization',
+    description:
+      'TPS profiling, async task refactoring, query optimization, chunk loading tuning. I\'ve rescued servers hemorrhaging players due to lag — I know exactly where to look.',
+    price: 'From $100',
+  },
+  {
+    icon: '◆',
+    name: 'Anti-Cheat Systems',
+    description:
+      'Custom heuristic-based anti-cheat modules targeting your specific game mode. Far more effective than generic solutions, with tunable sensitivity thresholds.',
+    price: 'From $200',
+  },
+  {
+    icon: '◇',
+    name: 'Economy & Monetization',
+    description:
+      'Player economy design, auction systems, and store integration (Tebex / Stripe). I balance fun vs. pay-to-win optics while maximizing sustainable revenue.',
+    price: 'From $175',
+  },
+  {
+    icon: '△',
+    name: 'Code Audit & Consultation',
+    description:
+      'Review your existing codebase for security holes, memory leaks, and architectural debt. Get a prioritized report with actionable fixes and long-term recommendations.',
+    price: 'From $80',
+  },
+]
+
+// ============================================================
+//  UFO Component — bounces like a screensaver
+// ============================================================
+
+function UFO() {
+  const posRef = useRef({ x: 80, y: 80 })
+  const velRef = useRef({ vx: 1.4, vy: 0.9 })
+  const animRef = useRef<number>(0)
+  const elRef = useRef<HTMLDivElement>(null)
+  const targetRef = useRef<{ x: number; y: number } | null>(null)
+  const [, forceRender] = useState(0)
+
+  const SIZE = 56
+
+  const tick = useCallback(() => {
+    const el = elRef.current
+    if (!el) {
+      animRef.current = requestAnimationFrame(tick)
+      return
+    }
+    const W = window.innerWidth - SIZE
+    const H = window.innerHeight - SIZE
+
+    // If moving toward a click-target, lerp smoothly
+    if (targetRef.current) {
+      const { x: tx, y: ty } = targetRef.current
+      const dx = tx - posRef.current.x
+      const dy = ty - posRef.current.y
+      const dist = Math.sqrt(dx * dx + dy * dy)
+      if (dist < 3) {
+        targetRef.current = null
+        // Convert lerp position into proper bouncing velocity
+        velRef.current.vx = (Math.random() > 0.5 ? 1 : -1) * (1.2 + Math.random() * 0.8)
+        velRef.current.vy = (Math.random() > 0.5 ? 1 : -1) * (0.7 + Math.random() * 0.6)
+      } else {
+        const speed = 4
+        posRef.current.x += (dx / dist) * speed
+        posRef.current.y += (dy / dist) * speed
+      }
+    } else {
+      // Normal screensaver bounce
+      posRef.current.x += velRef.current.vx
+      posRef.current.y += velRef.current.vy
+
+      if (posRef.current.x >= W) {
+        posRef.current.x = W
+        velRef.current.vx = -Math.abs(velRef.current.vx)
+      } else if (posRef.current.x <= 0) {
+        posRef.current.x = 0
+        velRef.current.vx = Math.abs(velRef.current.vx)
+      }
+
+      if (posRef.current.y >= H) {
+        posRef.current.y = H
+        velRef.current.vy = -Math.abs(velRef.current.vy)
+      } else if (posRef.current.y <= 0) {
+        posRef.current.y = 0
+        velRef.current.vy = Math.abs(velRef.current.vy)
+      }
+    }
+
+    el.style.transform = `translate(${posRef.current.x}px, ${posRef.current.y}px)`
+    animRef.current = requestAnimationFrame(tick)
+  }, [])
+
+  useEffect(() => {
+    animRef.current = requestAnimationFrame(tick)
+    return () => cancelAnimationFrame(animRef.current)
+  }, [tick])
+
+  const handleClick = () => {
+    const W = window.innerWidth - SIZE - 40
+    const H = window.innerHeight - SIZE - 40
+    targetRef.current = {
+      x: 20 + Math.random() * W,
+      y: 20 + Math.random() * H,
+    }
+    forceRender(n => n + 1)
+  }
+
+  return (
+    <div
+      ref={elRef}
+      style={{
+        position: 'fixed',
+        top: 0,
+        left: 0,
+        width: SIZE,
+        height: SIZE,
+        zIndex: 9998,
+        willChange: 'transform',
+        userSelect: 'none',
+      }}
+      onClick={handleClick}
+      title="Click me!"
+    >
+      <svg
+        className="ufo-svg"
+        width={SIZE}
+        height={SIZE}
+        viewBox="0 0 56 56"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        {/* Glow base */}
+        <ellipse cx="28" cy="38" rx="18" ry="5" fill="rgba(220,38,38,0.18)" />
+        {/* Beam */}
+        <polygon points="20,38 36,38 32,52 24,52" fill="rgba(220,38,38,0.10)" />
+        <polygon points="22,38 34,38 31,50 25,50" fill="rgba(220,38,38,0.08)" />
+        {/* Body shadow */}
+        <ellipse cx="28" cy="33" rx="17" ry="8" fill="#1a0000" />
+        {/* Body */}
+        <ellipse cx="28" cy="32" rx="16" ry="7" fill="#1f0505" stroke="#dc2626" strokeWidth="1" />
+        {/* Dome */}
+        <ellipse cx="28" cy="28" rx="9" ry="7" fill="#200808" stroke="#ef4444" strokeWidth="0.8" />
+        {/* Dome glass sheen */}
+        <ellipse cx="26" cy="25" rx="4" ry="3" fill="rgba(239,68,68,0.12)" />
+        {/* Running lights */}
+        <circle cx="14" cy="33" r="2" fill="#dc2626" />
+        <circle cx="20" cy="36" r="1.5" fill="#ef4444" />
+        <circle cx="28" cy="38" r="1.5" fill="#ef4444" />
+        <circle cx="36" cy="36" r="1.5" fill="#ef4444" />
+        <circle cx="42" cy="33" r="2" fill="#dc2626" />
+        {/* Alien eyes */}
+        <ellipse cx="25" cy="27" rx="2" ry="2.5" fill="#dc2626" opacity="0.9" />
+        <ellipse cx="31" cy="27" rx="2" ry="2.5" fill="#dc2626" opacity="0.9" />
+        <circle cx="25" cy="27" r="1" fill="#ff0000" />
+        <circle cx="31" cy="27" r="1" fill="#ff0000" />
+      </svg>
+    </div>
+  )
+}
+
+// ============================================================
+//  Star Field Component
+// ============================================================
+
+function StarField() {
+  const stars = Array.from({ length: 120 }, (_, i) => ({
+    id: i,
+    x: Math.random() * 100,
+    y: Math.random() * 100,
+    size: Math.random() * 1.5 + 0.3,
+    opacity: Math.random() * 0.6 + 0.1,
+    animDelay: Math.random() * 5,
+  }))
+
+  return (
+    <div className="stars" aria-hidden="true">
+      <svg width="100%" height="100%" style={{ position: 'absolute', inset: 0 }}>
+        {stars.map(s => (
+          <circle
+            key={s.id}
+            cx={`${s.x}%`}
+            cy={`${s.y}%`}
+            r={s.size}
+            fill="white"
+            opacity={s.opacity}
+            style={{
+              animation: `red-pulse ${2 + s.animDelay}s ease-in-out infinite`,
+            }}
+          />
+        ))}
+      </svg>
+    </div>
+  )
+}
+
+// ============================================================
+//  Main Portfolio Page
+// ============================================================
+
+export const Route = createFileRoute('/')({
+  component: Portfolio,
+})
+
+function Portfolio() {
+  return (
+    <div className="scanlines" style={{ minHeight: '100vh', background: '#0a0a0a', position: 'relative' }}>
+      <StarField />
+      <UFO />
+
+      {/* NAV */}
+      <nav style={{
+        position: 'sticky',
+        top: 0,
+        zIndex: 100,
+        background: 'rgba(10,10,10,0.85)',
+        backdropFilter: 'blur(12px)',
+        borderBottom: '1px solid rgba(220,38,38,0.2)',
+        padding: '0 2rem',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        height: '56px',
+      }}>
+        <span style={{
+          fontFamily: 'Orbitron, monospace',
+          fontWeight: 800,
+          fontSize: '1rem',
+          color: '#ef4444',
+          letterSpacing: '0.1em',
+          textShadow: '0 0 12px rgba(239,68,68,0.7)',
+        }}>
+          {DEVELOPER.handle}
+        </span>
+        <div style={{ display: 'flex', gap: '2rem' }}>
+          {['about', 'servers', 'services'].map(s => (
+            <a
+              key={s}
+              href={`#${s}`}
+              style={{
+                fontFamily: 'Share Tech Mono, monospace',
+                fontSize: '0.72rem',
+                letterSpacing: '0.2em',
+                textTransform: 'uppercase',
+                color: '#9ca3af',
+                textDecoration: 'none',
+                transition: 'color 0.2s',
+              }}
+              onMouseEnter={e => (e.currentTarget.style.color = '#ef4444')}
+              onMouseLeave={e => (e.currentTarget.style.color = '#9ca3af')}
+            >
+              {s}
+            </a>
+          ))}
+        </div>
+      </nav>
+
+      {/* HERO */}
+      <header style={{
+        position: 'relative',
+        zIndex: 1,
+        padding: '6rem 2rem 4rem',
+        maxWidth: '900px',
+        margin: '0 auto',
+      }}>
+        <p className="section-label" style={{ marginBottom: '1rem' }}>// initialized</p>
+        <h1 className="glitch-text" style={{
+          fontFamily: 'Orbitron, monospace',
+          fontWeight: 900,
+          fontSize: 'clamp(2.4rem, 6vw, 4.5rem)',
+          lineHeight: 1.05,
+          color: '#f0f0f0',
+          textShadow: '0 0 30px rgba(220,38,38,0.4)',
+          marginBottom: '0.5rem',
+        }}>
+          {DEVELOPER.handle}
+        </h1>
+        <h2 style={{
+          fontFamily: 'Rajdhani, sans-serif',
+          fontWeight: 300,
+          fontSize: 'clamp(1rem, 2.5vw, 1.4rem)',
+          color: '#ef4444',
+          letterSpacing: '0.08em',
+          marginBottom: '1.5rem',
+        }}>
+          {DEVELOPER.title}
+        </h2>
+        <div style={{ display: 'flex', gap: '1.5rem', flexWrap: 'wrap', alignItems: 'center' }}>
+          <span style={{
+            fontFamily: 'Share Tech Mono, monospace',
+            fontSize: '0.75rem',
+            color: '#4b5563',
+            letterSpacing: '0.1em',
+          }}>
+            LOC: {DEVELOPER.location}
+          </span>
+          {DEVELOPER.available && (
+            <span style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: '0.4rem',
+              fontFamily: 'Share Tech Mono, monospace',
+              fontSize: '0.7rem',
+              color: '#22c55e',
+              letterSpacing: '0.12em',
+            }}>
+              <span style={{
+                width: '6px',
+                height: '6px',
+                borderRadius: '50%',
+                background: '#22c55e',
+                boxShadow: '0 0 8px #22c55e',
+                display: 'inline-block',
+                animation: 'red-pulse 2s infinite',
+              }} />
+              AVAILABLE_FOR_HIRE
+            </span>
+          )}
+        </div>
+      </header>
+
+      <div style={{ maxWidth: '900px', margin: '0 auto', padding: '0 2rem', position: 'relative', zIndex: 1 }}>
+
+        {/* ABOUT */}
+        <section id="about" style={{ marginBottom: '6rem' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginBottom: '2rem' }}>
+            <p className="section-label">01 / about</p>
+            <div className="section-divider" style={{ flex: 1 }} />
+          </div>
+
+          <div className="border-glow card-clip" style={{
+            background: '#111111',
+            padding: '2rem',
+            position: 'relative',
+          }}>
+            {/* Corner decoration */}
+            <div style={{
+              position: 'absolute',
+              top: '8px',
+              right: '8px',
+              width: '24px',
+              height: '24px',
+              borderTop: '2px solid #dc2626',
+              borderRight: '2px solid #dc2626',
+            }} />
+            <div style={{
+              position: 'absolute',
+              bottom: '8px',
+              left: '8px',
+              width: '24px',
+              height: '24px',
+              borderBottom: '2px solid #dc2626',
+              borderLeft: '2px solid #dc2626',
+            }} />
+
+            <div style={{ display: 'flex', gap: '2rem', flexWrap: 'wrap' }}>
+              <div style={{ flex: 1, minWidth: '200px' }}>
+                <div style={{
+                  width: '80px',
+                  height: '80px',
+                  borderRadius: '4px',
+                  background: 'linear-gradient(135deg, #1f0505, #2a0808)',
+                  border: '2px solid #dc2626',
+                  boxShadow: '0 0 20px rgba(220,38,38,0.3)',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  fontFamily: 'Orbitron, monospace',
+                  fontWeight: 900,
+                  fontSize: '1.8rem',
+                  color: '#ef4444',
+                  marginBottom: '1.5rem',
+                }}>
+                  {DEVELOPER.handle.slice(0, 2).toUpperCase()}
+                </div>
+                <p style={{
+                  fontFamily: 'Orbitron, monospace',
+                  fontWeight: 700,
+                  fontSize: '1.1rem',
+                  color: '#f0f0f0',
+                  marginBottom: '0.25rem',
+                }}>
+                  {DEVELOPER.realName}
+                </p>
+                <p style={{
+                  fontFamily: 'Share Tech Mono, monospace',
+                  fontSize: '0.72rem',
+                  color: '#dc2626',
+                  letterSpacing: '0.1em',
+                }}>
+                  {DEVELOPER.title}
+                </p>
+              </div>
+              <div style={{ flex: 2, minWidth: '240px' }}>
+                <p style={{
+                  fontFamily: 'Rajdhani, sans-serif',
+                  fontSize: '1.1rem',
+                  fontWeight: 400,
+                  lineHeight: 1.7,
+                  color: '#d1d5db',
+                  whiteSpace: 'pre-line',
+                }}>
+                  {DEVELOPER.bio}
+                </p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* PAST SERVERS */}
+        <section id="servers" style={{ marginBottom: '6rem' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginBottom: '2rem' }}>
+            <p className="section-label">02 / past servers</p>
+            <div className="section-divider" style={{ flex: 1 }} />
+          </div>
+
+          <div style={{
+            display: 'grid',
+            gridTemplateColumns: 'repeat(auto-fill, minmax(380px, 1fr))',
+            gap: '1.25rem',
+          }}>
+            {PAST_SERVERS.map((server) => (
+              <ServerCard key={server.name} server={server} />
+            ))}
+          </div>
+        </section>
+
+        {/* SERVICES */}
+        <section id="services" style={{ marginBottom: '6rem' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginBottom: '2rem' }}>
+            <p className="section-label">03 / services</p>
+            <div className="section-divider" style={{ flex: 1 }} />
+          </div>
+
+          <div style={{
+            display: 'grid',
+            gridTemplateColumns: 'repeat(auto-fill, minmax(260px, 1fr))',
+            gap: '1rem',
+          }}>
+            {SERVICES.map((svc) => (
+              <ServiceCard key={svc.name} service={svc} />
+            ))}
+          </div>
+        </section>
+
+        {/* FOOTER */}
+        <footer style={{
+          borderTop: '1px solid rgba(220,38,38,0.15)',
+          padding: '2rem 0',
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+          flexWrap: 'wrap',
+          gap: '1rem',
+        }}>
+          <span style={{
+            fontFamily: 'Share Tech Mono, monospace',
+            fontSize: '0.7rem',
+            color: '#374151',
+            letterSpacing: '0.1em',
+          }}>
+            © {new Date().getFullYear()} {DEVELOPER.handle} — ALL SYSTEMS NOMINAL
+          </span>
+          <span style={{
+            fontFamily: 'Share Tech Mono, monospace',
+            fontSize: '0.65rem',
+            color: '#dc2626',
+            letterSpacing: '0.05em',
+            opacity: 0.6,
+          }}>
+            SYS::BUILD_v2.4.1_STABLE
+          </span>
+        </footer>
+
+      </div>
+    </div>
+  )
+}
+
+// ── Server Card ──
+
+type Server = typeof PAST_SERVERS[number]
+
+function ServerCard({ server }: { server: Server }) {
+  const [hovered, setHovered] = useState(false)
+
+  return (
+    <div
+      className="card-clip hover-lift"
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
+      style={{
+        background: hovered ? '#161616' : '#111111',
+        border: `1px solid ${hovered ? 'rgba(220,38,38,0.6)' : 'rgba(220,38,38,0.18)'}`,
+        boxShadow: hovered
+          ? 'inset 0 0 30px rgba(220,38,38,0.07), 0 0 20px rgba(220,38,38,0.12)'
+          : 'inset 0 0 20px rgba(220,38,38,0.03)',
+        padding: '1.5rem',
+        position: 'relative',
+        transition: 'background 0.3s, border-color 0.3s, box-shadow 0.3s, transform 0.2s',
+      }}
+    >
+      {/* Status dot */}
+      <div style={{
+        position: 'absolute',
+        top: '1rem',
+        right: '1rem',
+        display: 'flex',
+        alignItems: 'center',
+        gap: '0.35rem',
+      }}>
+        <span style={{
+          width: '6px',
+          height: '6px',
+          borderRadius: '50%',
+          background: server.status === 'active' ? '#22c55e' : '#4b5563',
+          boxShadow: server.status === 'active' ? '0 0 8px #22c55e' : 'none',
+          display: 'inline-block',
+        }} />
+        <span style={{
+          fontFamily: 'Share Tech Mono, monospace',
+          fontSize: '0.6rem',
+          color: server.status === 'active' ? '#22c55e' : '#4b5563',
+          letterSpacing: '0.1em',
+          textTransform: 'uppercase',
+        }}>
+          {server.status}
+        </span>
+      </div>
+
+      <h3 style={{
+        fontFamily: 'Orbitron, monospace',
+        fontWeight: 700,
+        fontSize: '0.95rem',
+        color: '#f0f0f0',
+        marginBottom: '0.2rem',
+        paddingRight: '4rem',
+      }}>
+        {server.name}
+      </h3>
+      <p style={{
+        fontFamily: 'Share Tech Mono, monospace',
+        fontSize: '0.68rem',
+        color: '#dc2626',
+        letterSpacing: '0.08em',
+        marginBottom: '0.75rem',
+      }}>
+        {server.role} · {server.period}
+      </p>
+
+      <div style={{
+        display: 'flex',
+        gap: '0.5rem',
+        marginBottom: '0.85rem',
+        alignItems: 'center',
+      }}>
+        <span style={{
+          fontFamily: 'Share Tech Mono, monospace',
+          fontSize: '0.62rem',
+          color: '#6b7280',
+          letterSpacing: '0.05em',
+        }}>
+          PEAK: {server.playerPeak}
+        </span>
+      </div>
+
+      <p style={{
+        fontFamily: 'Rajdhani, sans-serif',
+        fontSize: '0.95rem',
+        fontWeight: 400,
+        lineHeight: 1.6,
+        color: '#9ca3af',
+        marginBottom: '1rem',
+      }}>
+        {server.description}
+      </p>
+
+      <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.4rem' }}>
+        {server.tags.map(tag => (
+          <span key={tag} style={{
+            fontFamily: 'Share Tech Mono, monospace',
+            fontSize: '0.6rem',
+            padding: '0.2rem 0.5rem',
+            background: 'rgba(220,38,38,0.08)',
+            border: '1px solid rgba(220,38,38,0.25)',
+            color: '#dc2626',
+            letterSpacing: '0.05em',
+          }}>
+            {tag}
+          </span>
+        ))}
+      </div>
+    </div>
+  )
+}
+
+// ── Service Card ──
+
+type Service = typeof SERVICES[number]
+
+function ServiceCard({ service }: { service: Service }) {
+  const [hovered, setHovered] = useState(false)
+
+  return (
+    <div
+      className="hover-lift"
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
+      style={{
+        background: hovered ? '#161616' : '#111111',
+        border: `1px solid ${hovered ? 'rgba(220,38,38,0.5)' : 'rgba(220,38,38,0.15)'}`,
+        boxShadow: hovered ? '0 0 20px rgba(220,38,38,0.1)' : 'none',
+        padding: '1.5rem',
+        position: 'relative',
+        transition: 'background 0.3s, border-color 0.3s, box-shadow 0.3s, transform 0.2s',
+      }}
+    >
+      <div style={{
+        fontFamily: 'monospace',
+        fontSize: '1.6rem',
+        color: '#dc2626',
+        textShadow: '0 0 12px rgba(220,38,38,0.6)',
+        marginBottom: '0.75rem',
+        lineHeight: 1,
+      }}>
+        {service.icon}
+      </div>
+      <h3 style={{
+        fontFamily: 'Orbitron, monospace',
+        fontWeight: 600,
+        fontSize: '0.8rem',
+        color: '#f0f0f0',
+        marginBottom: '0.6rem',
+        letterSpacing: '0.05em',
+      }}>
+        {service.name}
+      </h3>
+      <p style={{
+        fontFamily: 'Rajdhani, sans-serif',
+        fontSize: '0.92rem',
+        fontWeight: 400,
+        lineHeight: 1.6,
+        color: '#9ca3af',
+        marginBottom: '1rem',
+        flex: 1,
+      }}>
+        {service.description}
+      </p>
+      <div style={{
+        fontFamily: 'Share Tech Mono, monospace',
+        fontSize: '0.7rem',
+        color: '#ef4444',
+        letterSpacing: '0.08em',
+        borderTop: '1px solid rgba(220,38,38,0.15)',
+        paddingTop: '0.75rem',
+      }}>
+        {service.price}
+      </div>
+    </div>
+  )
+}
