@@ -6,57 +6,56 @@ import { useEffect, useRef, useState, useCallback } from 'react'
 // ============================================================
 
 const DEVELOPER = {
-  handle: 'RedstoneOps',
-  realName: 'Buca's Domain',
+  handle: 'Buca‘s Domain',
+  realName: 'Buca‘s Domain',
   title: 'Minecraft Developer & VPS and Hosting Provider',
-  bio: `I've been engineering Minecraft servers since 2013 — from humble survival
-  worlds to large-scale networks with custom game modes, economy systems, and
-  anti-cheat solutions. Fluent in Java, Kotlin, and the dark arts of NMS internals.
-  When I'm not optimizing TPS I'm probably abusing redstone in ways the devs
-  never intended.`,
+  bio: `I’m a 16 year old Engineer looking to work full time as a Developer in
+  Minecraft and stuff related to it. I like coding, working on projects
+  and playing games with friends. I code since 2018 and have become
+  better at it ever since. DM ActualBuca on Discord for Inquires.`,
   location: 'Sector 7-G, The Grid',
   available: true,
 }
 
 const PAST_SERVERS = [
   {
-    name: 'NovaCraft Network',
-    role: 'Lead Plugin Developer',
-    period: '2021 – 2024',
-    playerPeak: '3,200 concurrent',
+    name: 'EclipseSMP',
+    role: 'Owner',
+    period: '2025 - 2026',
+    playerPeak: '187 concurrent',
     description:
-      'Built a fully custom factions system with territory wars, clan vaults, and real-time map rendering. Designed the entire economy layer including auction houses, player shops, and inflation controls.',
-    tags: ['Factions', 'Economy', 'Java', 'MySQL', 'Redis'],
+      'Created plugins and managed the server, overseeing all aspects of server operations and plugin development.',
+    tags: ['Economy', 'Lifesteal', 'Pvp', 'Betrayals', 'Anarchy'],
     status: 'retired',
   },
   {
-    name: 'VoidPlex SkyBlock',
-    role: 'Senior Developer',
-    period: '2019 – 2021',
-    playerPeak: '1,800 concurrent',
+    name: 'TurtleSMP',
+    role: 'Owner',
+    period: '2024 – 2026',
+    playerPeak: '1,202 concurrent',
     description:
-      'Engineered custom island generation algorithms and a prestige system with 40+ challenges. Integrated Stripe for rank purchases and built an admin dashboard for live server metrics.',
-    tags: ['SkyBlock', 'Kotlin', 'PostgreSQL', 'Stripe API'],
+      'Created custom made plugins and Managed the Server',
+    tags: ['Economy', 'PvP', 'Duels', 'Anarchy'],
     status: 'active',
   },
   {
-    name: 'CrimsonPvP',
-    role: 'Plugin Developer',
-    period: '2017 – 2019',
-    playerPeak: '900 concurrent',
+    name: 'CobbleWorld',
+    role: 'Developer',
+    period: '2026',
+    playerPeak: '3,459 concurrent',
     description:
-      'Developed anti-cheat modules with heuristic movement analysis and custom kit-PvP mechanics. Reduced false positives by 60% compared to off-the-shelf solutions.',
-    tags: ['PvP', 'Anti-Cheat', 'NMS', 'Java'],
-    status: 'retired',
+      'Custom Made their Cobblemon Mod and actively updating it.',
+    tags: ['Pokémon', 'Mod', 'Fabric'],
+    status: 'active',
   },
   {
-    name: 'AetherMC RPG',
-    role: 'Systems Architect',
-    period: '2015 – 2017',
-    playerPeak: '500 concurrent',
+    name: 'UnstableFFA',
+    role: 'Developer',
+    period: '2026',
+    playerPeak: '210 concurrent',
     description:
-      'Architected a full RPG framework: custom mob AI, loot tables, skill trees, quest chains, and a guild system. The codebase became an open-source template used by dozens of servers.',
-    tags: ['RPG', 'AI', 'Open Source', 'Java'],
+      'Developed their kits plugin and managed their Server.',
+    tags: ['Unstable', 'FFA', 'PvP', 'Kits'],
     status: 'retired',
   },
 ]
@@ -66,43 +65,43 @@ const SERVICES = [
     icon: '⬡',
     name: 'Custom Plugin Development',
     description:
-      'Bespoke Bukkit/Spigot/Paper plugins built to your exact specifications. From simple utilities to complex game systems — clean, documented, performant code.',
-    price: 'From $150',
+      'Building Custom Plugins / Mod based on what you request.',
+    price: 'From $6,50',
   },
   {
     icon: '◈',
-    name: 'Server Architecture & Setup',
+    name: 'Server Setups',
     description:
-      'Full server infrastructure design: BungeeCord/Velocity networks, load balancing, database schemas, caching strategies, and deployment pipelines.',
-    price: 'From $300',
+      'Full Servers Setups including a Server network to connect to different servers.',
+    price: 'From $15',
   },
   {
     icon: '◉',
-    name: 'Performance Optimization',
+    name: 'Server management',
     description:
-      'TPS profiling, async task refactoring, query optimization, chunk loading tuning. I\'ve rescued servers hemorrhaging players due to lag — I know exactly where to look.',
-    price: 'From $100',
+      'Managing the server and actively finding Moderators to protect your server against Cheaters',
+    price: 'From $10',
   },
   {
     icon: '◆',
-    name: 'Anti-Cheat Systems',
+    name: 'Server Developmen',
     description:
-      'Custom heuristic-based anti-cheat modules targeting your specific game mode. Far more effective than generic solutions, with tunable sensitivity thresholds.',
-    price: 'From $200',
+      'Developing Anti-Cheats, Plugins and everything related to  your server.',
+    price: 'From $20',
   },
   {
     icon: '◇',
-    name: 'Economy & Monetization',
+    name: 'Server Moderation',
     description:
-      'Player economy design, auction systems, and store integration (Tebex / Stripe). I balance fun vs. pay-to-win optics while maximizing sustainable revenue.',
-    price: 'From $175',
+      'Formally Moderating your Server to ensure It‘s safe against cheaters and those who are breaking the Server rules.',
+    price: 'From $5',
   },
   {
     icon: '△',
-    name: 'Code Audit & Consultation',
+    name: 'Server Marketing',
     description:
-      'Review your existing codebase for security holes, memory leaks, and architectural debt. Get a prioritized report with actionable fixes and long-term recommendations.',
-    price: 'From $80',
+      'Growing your server to it‘s absolute limit, by promoting the Server on Social Media and hiring Content Creators to make content on your Server.',
+    price: 'From $50',
   },
 ]
 
