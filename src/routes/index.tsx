@@ -434,24 +434,20 @@ function Portfolio() {
 
             <div style={{ display: 'flex', gap: '2rem', flexWrap: 'wrap' }}>
               <div style={{ flex: 1, minWidth: '200px' }}>
-                <div style={{
-                  width: '80px',
-                  height: '80px',
-                  borderRadius: '4px',
-                  background: 'linear-gradient(135deg, #1f0505, #2a0808)',
-                  border: '2px solid #dc2626',
-                  boxShadow: '0 0 20px rgba(220,38,38,0.3)',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  fontFamily: 'Orbitron, monospace',
-                  fontWeight: 900,
-                  fontSize: '1.8rem',
-                  color: '#ef4444',
-                  marginBottom: '1.5rem',
-                }}>
-                  {DEVELOPER.handle.slice(0, 2).toUpperCase()}
-                </div>
+                <img
+                  src="/profile-picture.jpg"
+                  alt="BU profile picture"
+                  style={{
+                    width: '80px',
+                    height: '80px',
+                    borderRadius: '4px',
+                    border: '2px solid #dc2626',
+                    boxShadow: '0 0 20px rgba(220,38,38,0.3)',
+                    display: 'block',
+                    objectFit: 'cover',
+                    marginBottom: '1.5rem',
+                  }}
+                />
                 <p style={{
                   fontFamily: 'Orbitron, monospace',
                   fontWeight: 700,
