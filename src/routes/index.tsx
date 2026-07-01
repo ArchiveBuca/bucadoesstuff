@@ -9,10 +9,10 @@ const DEVELOPER = {
   handle: 'Buca‘s Domain',
   realName: 'Buca‘s Domain',
   title: 'Minecraft Developer & VPS and Hosting Provider',
-  bio: `I’m a 16 year old Engineer looking to work full time as a Developer in
-  Minecraft and stuff related to it. I like coding, working on projects
-  and playing games with friends. I code since 2018 and have become
-  better at it ever since. DM ActualBuca on Discord for Inquires.`,
+  bio: 'Hey, My name is Buca - I‘m 16 years old from the Netherlands.'
+  I can do many things. I am currently open for comissions,
+  so feel free to contact me for your Server!
+  My username is ActualBuca on all platforms, reach out if u want.`,
   location: 'Sector 7-G, The Grid',
   available: true,
 }
@@ -21,40 +21,40 @@ const PAST_SERVERS = [
   {
     name: 'EclipseSMP',
     role: 'Owner',
-    period: '2025 - 2026',
-    playerPeak: '187 concurrent',
+    period: '2026',
+    playerPeak: '80 concurrent',
     description:
-      'Created plugins and managed the server, overseeing all aspects of server operations and plugin development.',
+      'Maintaned the Server, Retired due to innsuficient funds.',
     tags: ['Economy', 'Lifesteal', 'Pvp', 'Betrayals', 'Anarchy'],
     status: 'retired',
   },
   {
     name: 'TurtleSMP',
     role: 'Owner',
-    period: '2024 – 2026',
-    playerPeak: '1,202 concurrent',
+    period: '2026',
+    playerPeak: '122 concurrent',
     description:
-      'Created custom made plugins and Managed the Server',
-    tags: ['Economy', 'PvP', 'Duels', 'Anarchy'],
+      'Creating, and configurating the Server Plugins and more.',
+    tags: ['Economy', 'PvP', 'Duels', 'Network'],
     status: 'active',
   },
   {
-    name: 'CobbleWorld',
+    name: 'MonkeyVanilla',
     role: 'Developer',
     period: '2026',
-    playerPeak: '3,459 concurrent',
+    playerPeak: '0 concurrent',
     description:
-      'Custom Made their Cobblemon Mod and actively updating it.',
-    tags: ['Pokémon', 'Mod', 'Fabric'],
+      'Developing and configurating their plugins, not out yet.',
+    tags: ['Economy', 'PvP', 'Survival'],
     status: 'active',
   },
   {
     name: 'UnstableFFA',
     role: 'Developer',
     period: '2026',
-    playerPeak: '210 concurrent',
+    playerPeak: '460 concurrent',
     description:
-      'Developed their kits plugin and managed their Server.',
+      'Installing and creating new plugins for the server and developing the anticheat.',
     tags: ['Unstable', 'FFA', 'PvP', 'Kits'],
     status: 'retired',
   },
@@ -65,42 +65,42 @@ const SERVICES = [
     icon: '⬡',
     name: 'Custom Plugin Development',
     description:
-      'Building Custom Plugins / Mod based on what you request.',
+      'Building requested custom plugins, prices may increase depending on how much work it requires.',
     price: 'From $6,50',
   },
   {
     icon: '◈',
     name: 'Server Setups',
     description:
-      'Full Servers Setups including a Server network to connect to different servers.',
+      'Fully made Server Setup ready to be used on your Server.',
     price: 'From $15',
   },
   {
     icon: '◉',
     name: 'Server management',
     description:
-      'Managing the server and actively finding Moderators to protect your server against Cheaters',
+      'I will find new Staff, Developers and manage the community server. Could be voluntary so slide me an dm.',
     price: 'From $10',
   },
   {
     icon: '◆',
-    name: 'Server Developmen',
+    name: 'Server Development',
     description:
-      'Developing Anti-Cheats, Plugins and everything related to  your server.',
-    price: 'From $20',
+      'Working for your Server / Network fulltime, Custom plugins cost 5$ per month and are not included standard.',
+    price: 'From $10/m',
   },
   {
     icon: '◇',
     name: 'Server Moderation',
     description:
-      'Formally Moderating your Server to ensure It‘s safe against cheaters and those who are breaking the Server rules.',
-    price: 'From $5',
+      'Professionally moderating on your Server / Network or Community Server for 40 hours a week',
+    price: 'From $5/m',
   },
   {
     icon: '△',
     name: 'Server Marketing',
     description:
-      'Growing your server to it‘s absolute limit, by promoting the Server on Social Media and hiring Content Creators to make content on your Server.',
+      'Promoting your Server accross social media, Multiple Content Creators will creat an video about your server promoting it.',
     price: 'From $50',
   },
 ]
