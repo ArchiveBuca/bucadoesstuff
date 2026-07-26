@@ -9,10 +9,10 @@ const DEVELOPER = {
   handle: 'Buca‘s Domain',
   realName: 'Buca‘s Domain',
   title: 'Minecraft Developer & VPS and Hosting Provider',
-  bio: 'Hey, My name is Buca - I‘m 16 years old from the Netherlands.'
-  I can do many things. I am currently open for comissions,
-  so feel free to contact me for your Server!
-  My username is ActualBuca on all platforms, reach out if u want.`,
+  bio: `Hey, My name is Buca - I‘m 16 years old from the Netherlands.
+I can do many things. I am currently open for comissions,
+so feel free to contact me for your Server!
+My username is ActualBuca on all platforms, reach out if u want.`,
   location: 'Sector 7-G, The Grid',
   available: true,
 }
@@ -22,6 +22,7 @@ const PAST_SERVERS = [
     name: 'EclipseSMP',
     role: 'Owner',
     period: '2026',
+    serverIp: 'play.eclipsesmp.net',
     playerPeak: '80 concurrent',
     description:
       'Maintaned the Server, Retired due to innsuficient funds.',
@@ -32,6 +33,7 @@ const PAST_SERVERS = [
     name: 'TurtleSMP',
     role: 'Owner',
     period: '2026',
+    serverIp: 'play.turtlesmp.net',
     playerPeak: '122 concurrent',
     description:
       'Creating, and configurating the Server Plugins and more.',
@@ -42,6 +44,7 @@ const PAST_SERVERS = [
     name: 'MonkeyVanilla',
     role: 'Developer',
     period: '2026',
+    serverIp: 'play.monkeyvanilla.net',
     playerPeak: '0 concurrent',
     description:
       'Developing and configurating their plugins, not out yet.',
@@ -52,11 +55,56 @@ const PAST_SERVERS = [
     name: 'UnstableFFA',
     role: 'Developer',
     period: '2026',
+    serverIp: 'play.unstableffa.net',
     playerPeak: '460 concurrent',
     description:
       'Installing and creating new plugins for the server and developing the anticheat.',
     tags: ['Unstable', 'FFA', 'PvP', 'Kits'],
     status: 'retired',
+  },
+  {
+    name: 'CromeVanilla',
+    role: 'Owner',
+    period: '2026',
+    serverIp: 'play.cromevanilla.net',
+    playerPeak: '0 concurrent',
+    description:
+      'Building and configurating a fresh Vanilla experience, not out yet.',
+    tags: ['Vanilla', 'Survival'],
+    status: 'active',
+  },
+  {
+    name: 'LuxSMP',
+    role: 'Owner',
+    period: '2026',
+    serverIp: 'play.luxsmp.net',
+    playerPeak: '0 concurrent',
+    description:
+      'Setting up plugins and world configuration for the upcoming launch.',
+    tags: ['Economy', 'SMP', 'Survival'],
+    status: 'active',
+  },
+  {
+    name: 'BlazeSMP',
+    role: 'Owner',
+    period: '2026',
+    serverIp: 'play.blazesmp.net',
+    playerPeak: '0 concurrent',
+    description:
+      'Developing custom plugins and anticheat ahead of the server opening.',
+    tags: ['PvP', 'SMP', 'Kits'],
+    status: 'active',
+  },
+  {
+    name: 'CoreSMP',
+    role: 'Owner',
+    period: '2026',
+    serverIp: 'play.coresmp.net',
+    playerPeak: '0 concurrent',
+    description:
+      'Building the core plugin suite and network infrastructure, not out yet.',
+    tags: ['Economy', 'Network', 'Survival'],
+    status: 'active',
   },
 ]
 
@@ -622,6 +670,22 @@ function ServerCard({ server }: { server: Server }) {
       }}>
         {server.role} · {server.period}
       </p>
+
+      <div style={{
+        display: 'flex',
+        alignItems: 'center',
+        gap: '0.4rem',
+        marginBottom: '0.5rem',
+      }}>
+        <span style={{
+          fontFamily: 'Share Tech Mono, monospace',
+          fontSize: '0.68rem',
+          color: '#ef4444',
+          letterSpacing: '0.05em',
+        }}>
+          IP: {server.serverIp}
+        </span>
+      </div>
 
       <div style={{
         display: 'flex',
