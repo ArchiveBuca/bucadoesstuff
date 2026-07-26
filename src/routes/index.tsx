@@ -100,7 +100,7 @@ const PAST_SERVERS = [
     role: 'Developer',
     period: '2026',
     serverIp: 'coresmp.fun',
-    playerPeak: 'concurrent',
+    playerPeak: '18 concurrent',
     description:
       'Built a few plugins and did some bug fixes.',
     tags: ['Economy', 'SMP', 'Survival'],
